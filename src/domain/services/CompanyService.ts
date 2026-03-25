@@ -3,8 +3,8 @@ import {
   ErrorCode,
   StatusCode,
 } from '@config/schemas/response';
-import { Company } from '../entities/Company';
-import { ICompanyRepository } from '../repositories/ICompanyRepository';
+import { Company } from '../entities';
+import { ICompanyRepository } from '../repositories';
 
 export class CompanyService {
   constructor(private companyRepository: ICompanyRepository) {}

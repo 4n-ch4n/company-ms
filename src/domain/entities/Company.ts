@@ -1,7 +1,8 @@
-import { CompanyStatus } from '../value-objects/CompanyStatus';
+import { CompanyStatus } from '../value-objects';
 
 export class Company {
   public id: string;
+  public userId: string;
   public name: string | null;
   public taxId: string | null;
   public status: CompanyStatus | null;
@@ -10,6 +11,7 @@ export class Company {
 
   constructor({
     id,
+    userId,
     name = null,
     taxId = null,
     status = null,
@@ -17,6 +19,7 @@ export class Company {
     updatedAt = null,
   }: {
     id: string;
+    userId: string;
     name?: string | null;
     taxId?: string | null;
     status?: CompanyStatus | null;
@@ -24,6 +27,7 @@ export class Company {
     updatedAt?: Date | string | null;
   }) {
     this.id = id;
+    this.userId = userId;
     this.name = name;
     this.taxId = taxId;
     this.status = status;
