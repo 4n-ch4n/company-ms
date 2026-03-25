@@ -34,10 +34,7 @@ app.doc(envs.openApiUrl, {
   tags: [{ name: 'company', description: 'Companies Operations' }],
 });
 
-app.get(
-  envs.docsUrl,
-  swaggerUI({ url: envs.openApiUrl, title: 'Company MS' }),
-);
+app.get(envs.docsUrl, swaggerUI({ url: envs.openApiUrl, title: 'Company MS' }));
 app.get(`${envs.docsUrl}/`, (c) => c.redirect(envs.docsUrl));
 app.get('/', (c) => c.redirect(envs.docsUrl));
 
