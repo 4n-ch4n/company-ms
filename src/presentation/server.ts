@@ -5,6 +5,7 @@ import { cors } from 'hono/cors';
 import { jwt } from 'hono/jwt';
 import { envs } from '@config';
 import rootRoutes from './_root/index';
+import companyRoutes from './company/index';
 
 const app = new OpenAPIHono();
 
@@ -45,5 +46,6 @@ app.use(
     alg: 'HS256',
   }),
 );
+app.route(envs.baseUrl, companyRoutes);
 
 export default app;
