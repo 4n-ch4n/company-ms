@@ -11,6 +11,7 @@ import {
   StatusCode,
   SuccessResponseSchema,
 } from '@config/schemas/response';
+import { requirePermission } from '../middlewares';
 
 const RequestBodySchema = z.object({
   id: z.string().openapi({
@@ -34,6 +35,7 @@ const route = createRoute({
   description:
     'Updates the details of an existing company based on the provided information.',
   tags: ['Company'],
+  middleware: [requirePermission('company:edit')],
   request: {
     body: {
       content: {
