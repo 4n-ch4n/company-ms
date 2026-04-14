@@ -21,6 +21,14 @@ const RequestBodySchema = z.object({
     example: '12.345.678/0001-90',
     description: 'The tax ID of the company.',
   }),
+  planId: z.uuid().openapi({
+    example: '12345678-90ab-cdef-1234-567890abcdef',
+    description: 'The ID of the subscription plan to subscribe to.',
+  }),
+  billingCycle: z.enum(['MONTHLY', 'ANNUAL']).openapi({
+    example: 'MONTHLY',
+    description: 'The billing cycle for the subscription.',
+  }),
 });
 
 const route = createRoute({
@@ -80,13 +88,17 @@ const createHandler = (
   return async (c) => {
     try {
       const userId = c.get('jwtPayload').userId;
-      const { name, taxId } = c.req.valid('json');
+      const { name, taxId, planId, billingCycle } = c.req.valid('json');
 
-      const company = await companyAppService.createCompany({
-        userId,
-        name,
-        taxId,
-      });
+      const company = await companyAppService.createCompany(
+        {
+          userId,
+          name,
+          taxId,
+        },
+        planId,
+        billingCycle,
+      );
 
       const response = new ApiSuccessResponse(
         StatusCode.CREATED,

@@ -16,9 +16,17 @@ export class CompanyAppService {
     return company;
   }
 
-  async createCompany(companyDTO: ICompanyDTO): Promise<Company> {
+  async createCompany(
+    companyDTO: ICompanyDTO,
+    planId: string,
+    billingCycle: 'MONTHLY' | 'ANNUAL',
+  ): Promise<Company> {
     const company = CompanyMapper.mapCompanyDTOToEntity(companyDTO);
-    const createdCompany = await this.companyService.createCompany(company);
+    const createdCompany = await this.companyService.createCompany(
+      company,
+      planId,
+      billingCycle,
+    );
     return createdCompany;
   }
 

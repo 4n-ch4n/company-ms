@@ -4,10 +4,13 @@ import {
   StatusCode,
 } from '@config/schemas/response';
 import { Company } from '../entities';
-import { ICompanyRepository } from '../repositories';
+import { ICompanyRepository, ISubscriptionRepository } from '../repositories';
 
 export class CompanyService {
-  constructor(private companyRepository: ICompanyRepository) {}
+  constructor(
+    private companyRepository: ICompanyRepository,
+    private subscriptionRepository: ISubscriptionRepository,
+  ) {}
 
   async getCompanyById(id: string): Promise<Company | null> {
     const company = await this.companyRepository.getCompanyById(id);
@@ -24,7 +27,11 @@ export class CompanyService {
     return exists;
   }
 
-  async createCompany(company: Company): Promise<Company> {
+  async createCompany(
+    company: Company,
+    planId: string,
+    billingCycle: 'MONTHLY' | 'ANNUAL',
+  ): Promise<Company> {
     const alreadyExists = await this.existsByTaxId(company.taxId!);
     if (alreadyExists) {
       throw new ApiErrorResponse(
@@ -38,6 +45,22 @@ export class CompanyService {
     company.status = 'ACTIVE';
 
     await this.companyRepository.createCompany(company);
+
+    try {
+      await this.subscriptionRepository.createSubscription(
+        company.id,
+        planId,
+        billingCycle,
+      );
+    } catch (error) {
+      console.error('Failed to create subscription:', error);
+      throw new ApiErrorResponse(
+        StatusCode.INTERNAL_ERROR,
+        ErrorCode.FAILURE,
+        'Company created but failed to create subscription',
+      );
+    }
+
     return company;
   }
 

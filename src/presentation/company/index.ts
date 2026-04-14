@@ -2,8 +2,9 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { JwtVariables } from 'hono/jwt';
 import { CompanyAppService } from '@application/services';
 import { CompanyService } from '@domain/services';
-import { CompanyRepository } from '@infrastructure/repositories';
+import { CompanyRepository, SubscriptionRepository } from '@infrastructure/repositories';
 import { MongoConnection } from '@infrastructure/repositories/config';
+import { envs } from '@config';
 import getCompanyById from './getCompanyById';
 import getCompanyByTaxId from './getCompanyByTaxId';
 import createCompany from './createCompany';
@@ -14,8 +15,9 @@ const app = new OpenAPIHono<{ Variables: JwtVariables }>();
 const mongoDb = MongoConnection.getInstance();
 
 const companyRepository = new CompanyRepository(mongoDb);
+const subscriptionRepository = new SubscriptionRepository(envs);
 
-const companyService = new CompanyService(companyRepository);
+const companyService = new CompanyService(companyRepository, subscriptionRepository);
 const companyAppService = new CompanyAppService(companyService);
 
 app.openapi(
